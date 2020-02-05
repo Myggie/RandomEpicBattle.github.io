@@ -1,0 +1,412 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Luckiest+Guy&display=swap" rel="stylesheet">
+    <link rel="icon" href="http://portales.inacap.cl/web_resources/themes/portal/img/favicon.ico">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <title>Random Epic Battle</title>
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-1878393091927653",
+    enable_page_level_ads: true
+  });
+</script>
+</head>
+
+<body style="background-image: url(https://wallpaperset.com/w/full/1/2/d/284309.jpg); font-family: 'Luckiest Guy', cursive;" center>
+    <main>
+    <div class="row center">
+        <div class="col l12">
+            
+            <h4 style="background-image: url(https://jusamawi.files.wordpress.com/2011/12/d-3.jpg);color: white";>Random Epic Battle</h4>
+
+        </div>
+        <div id="app">
+         
+            <div v-if="puntos>0">
+                <div class="col l2">
+                    <div class="card-panel center " style="background-image: url(http://www.fondosblackberry.com/user-content/uploads/wall/o/21/11.jpg);border-radius: 100px;">
+                        <ul>
+                            <li v-for="item in heroes" >
+                                <p>
+                                    <label>
+                                        <input :id="item.id" name="group1" type="radio" :value="item.id" v-model="picked" />
+                                        <span :id="item.id+1" style="color:white;">{{item.name}}</span>
+                                    </label>
+
+                                </p>
+
+                                <img :src="item.image.url" height="100" width="100" class="circle">
+
+                        
+
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="col l3">
+                    <div class="card-panel center" style="background-image: url(https://st3.depositphotos.com/1806106/18919/v/600/depositphotos_189195836-stock-video-motion-graphics-animated-background-criss.jpg);border-radius: 20px;">
+                        <h6 style="color: blue;">Player 1</h6>
+                        <div v-if="picked==0 ">
+                            <h4 style="color: blue;">SELECIONA UN PERSONAJE</h4>
+                        </div>
+                            <div  v-if="estadon==3  && vidas==0">
+                                    <h6 style="color: yellow;">(NO TE QUEDAN VIDAS)</h6>
+                                    <button class="btn green"  @click="comprar1"><i class="material-icons left">change_history</i>Comprar 1 vida</button>
+                                    <h6 style="color: white;">(Costo: 1000 puntos)</h6><br>
+                                    <button class="btn green"  @click="comprar3"><i class="material-icons left">change_history</i>Comprar 3 vida</button>
+                                    <h6 style="color: white;">(Costo: 3000 puntos)</h6><br>
+                                    <button class="btn green"  @click="comprar5"><i class="material-icons left">change_history</i>Comprar 5 vida</button>
+                                    <h6 style="color: white;">(Costo: 5000 puntos)</h6><br>
+
+                        </div>
+                        <div v-for="item in heroes">
+                            <div v-if="item.id==picked">
+                                <h4 style="color: white;">{{item.name}}</h4>
+
+                                <br>
+                                <img :src="item.image.url" height="200" >
+                                <br>
+                                <h5 style="color: white;">Energia: {{item.powerstats.power}}</h5>
+                                <h5 style="color: white;">Fuerza: {{item.powerstats.combat}}</h5>
+                                <h5 style="color: white;">Velocidad: {{item.powerstats.speed}}</h5>
+                                <h5 style="color: white;">Sexo: {{item.appearance.gender}}</h5>
+
+                            </div>
+
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+                <div style="color: white;margin-top: 200px;"class="col l2">
+
+                    <li style="background-color: black;">
+                 Vidas: {{vidas}}
+                </li>
+                <li style="background-color: black;">
+                Ronda: {{round}}
+            </li>
+                <li style="background-color: black;">
+                Puntos: {{puntos}}
+            </li>
+                    <h1 style="background-color: black;">V/S</h1>
+                    <div v-if="picked!=0 && picked2!=0 && estado!=3">
+                        <p>
+                            <button @click="nueva" class="btn green"><i class="material-icons left">change_history</i>Luchar</button>
+                        </p>
+                    </div>
+                    <div v-if="estado==3 && estadon!=3">
+                            <p>
+                               Fin de la lucha:<br>
+                               Ganaste!!<br>
+
+                               <button class="btn green"  @click="cargarcpu"><i class="material-icons left">change_history</i>Siguiente Round</button>
+                            </p>
+                        </div>
+                        <div v-if="estado==3 && estadon==3 && vidas!=0">
+                                <p>
+                                   Fin de la lucha:<br>
+                                   Empataste!!
+                                   <button class="btn green"  @click="cargarplay"><i class="material-icons left">change_history</i>Gastar 1 Vida</button> <br><br>
+                                   <button class="btn green"  @click="cargarcpu"><i class="material-icons left">change_history</i>Siguiente Round</button>
+                                </p>
+                            </div>
+                        <div v-if="estadon==3 && estado!=3 && vidas!=0">
+                                <p>
+                                   Fin de la lucha:<br>
+                                   Perdiste!! 
+                                   <br>
+                                     <button class="btn green"  @click="cargarplay"><i class="material-icons left">change_history</i>Gastar 1 Vida</button>
+
+                                </p>
+                            </div>
+                </div>
+                <div class="col l3">
+                    <div class="card-panel center" style="background-image: url(https://st3.depositphotos.com/1806106/18919/v/600/depositphotos_189195836-stock-video-motion-graphics-animated-background-criss.jpg);border-radius: 20px;">
+                        <h6 style="color: red;">CPU</h6>  
+                        <div v-if="picked2==0">
+                            <h4 style="color: red;">SELECIONA UN PERSONAJE</h4>
+
+                        </div>
+                        <div v-for="item in heroes2">
+                            <div v-if="item.id==picked2">
+                                <h4 style="color: white;">{{item.name}}</h4>
+
+                                <br>
+                                <img :src="item.image.url" height="200">
+                                <br>
+                                <h5 style="color: white;">Energia: {{item.powerstats.power}}</h5>
+                                <h5 style="color: white;">Fuerza: {{item.powerstats.combat}}</h5>
+                                <h5 style="color: white;">Velocidad: {{item.powerstats.speed}}</h5>
+                                <h5 style="color: white;">Sexo: {{item.appearance.gender}}</h5>
+
+                            </div>
+
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+                <div class="col l2">
+                    <div class="card-panel center " style="background-image: url(http://www.fondosblackberry.com/user-content/uploads/wall/o/21/11.jpg);border-radius: 100px;">
+                        <ul>
+                            <li v-for="item in heroes2" >
+                                <p>
+                                    <label>
+                                        <input :id="item.id" name="group2" type="radio" :value="item.id"  v-model="picked2" />
+                                        <span  :id="item.id+1"  style="color:white;">{{item.name}}</span>
+                                    </label>
+
+                                </p>
+
+                                <img :src="item.image.url" height="100" width="100" class="circle">
+@
+
+
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+
+            </div>
+            <div v-else>
+                <br><br> <br><br> <br><br> <br><br>
+                    <p style="background-color: black;color: white">Perdiste :(</p>
+                    <p style="background-color: black;color: white">ya no te quedan puntos</p>
+
+            </div>
+        </div>
+    </main>
+    <footer style="background-image: url(https://images-na.ssl-images-amazon.com/images/I/91YhePYX-dL._SL1500_.jpg);" class="page-footer ">
+            <div class="container">
+              <div class="row">
+                <div class="col l6 s12">
+                  <h5 style="background-color: black;"   class="white-text">Random Epic Battle</h5>
+                  <p style="background-color: black;"class="white-text">Enfrentamientos epicos que no esperabas. <br>
+                     
+                  </p>
+                </div>
+                <div class="col l4 offset-l2 s12">
+                  <h5 style="background-color: black;"class="white-text">Información</h5>
+                  <ul>
+                    <li style="background-color: black;">Creadores de la pagina:</li>
+                    <li style="background-color: black;">CARLA VALENTINA RODRIGUEZ MORENO</li>
+                    <li style="background-color: black;">BASTIAN IGNACIO VALDES ADASME</li>
+                    <li style="background-color: black;">Sección: 921-4D</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="footer-copyright">
+              <div  style="background-color: black;"class="container">
+              © 2019 Copyright Inacap
+             
+              </div>
+            </div>
+          </footer>
+              
+
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script>
+            new Vue({
+                el: "#app",
+                data: {
+                    vidas:3,
+                    round:1,
+                    puntos:2000,
+                    estado:0,
+                    estadon:0,
+                    resta:0,
+                    pers:0,
+                    pers2:0,
+                    random: 0,
+                    random2: 0,
+                    picked2: "",
+                    picked: "",
+                    heroes: [],
+                    heroes2: [],
+                    url: "https://www.superheroapi.com/api.php/516438842280042/"
+                },
+                methods: { 
+                    nueva () {
+                       this.heroes.forEach(item => {
+                            if(item.id==this.picked){
+                                this.pers=(item.powerstats.speed+item.powerstats.combat)+item.powerstats.power;
+                            }
+                        });
+                      
+                        this.heroes2.forEach(item => {
+                            if(item.id==this.picked2){
+                                this.pers2=(item.powerstats.speed+item.powerstats.combat)+item.powerstats.power;
+                             
+                            } 
+                            
+                        });
+                      
+                        this.resta=this.pers-this.pers2;
+                        
+                        if(isNaN(this.resta)){
+                            alert("el resultado es impredecible");
+                            if (this.estado<3){
+                                this.estado+=1;
+                            }
+                           
+                            if (this.estadon<3){
+                                this.estadon+=1;
+                            }
+                            var p2 = document.getElementById(this.picked2);
+                            p2.disabled = true;
+                            var s2 = document.getElementById((this.picked2)+1);
+                            s2.classList.add("red-text");
+                            s2.innerHTML="ELIMINADO";
+                            this.picked2=0;
+                            var p = document.getElementById(this.picked);
+                            p.disabled = true;
+                            var s = document.getElementById((this.picked)+1);
+                            s.classList.add("red-text");
+                            s.innerHTML="ELIMINADO";
+                            this.picked=0;
+                            
+
+                        }else if(this.resta<=0){
+                            alert("tu personaje perdió");
+                            var p = document.getElementById(this.picked);
+                            p.disabled = true;
+                            var s = document.getElementById((this.picked)+1);
+                            s.classList.add("red-text");
+                            s.innerHTML="ELIMINADO";
+                            this.picked=0;
+                            if (this.estadon<3){
+                                this.estadon+=1;
+                            }
+                             this.puntos-=500;
+                         
+                             }else if(this.resta>0){
+                            alert(" tu personaje ganó");
+                            var p = document.getElementById(this.picked2);
+                            p.disabled = true;
+                            var s = document.getElementById((this.picked2)+1);
+                            s.classList.add("red-text");
+                            s.innerHTML="ELIMINADO";
+                            this.picked2=0;
+                            if (this.estado<3){
+                                this.estado+=1;
+                            }
+                            this.puntos+=1000;
+                        
+                             }
+                             
+                        
+                        
+                    },
+                    async comprar1() {
+                        if(this.puntos>=1000){
+                            this.vidas= 1;
+                        this.puntos -=1000;
+                        }else{
+                            alert("puntos insuficientes");
+                        }
+                        
+                    },
+                    async comprar3() {
+                        if(this.puntos>=3000){
+                            this.vidas= 3;
+                        this.puntos -=3000;
+                        }else{
+                            alert("puntos insuficientes");
+                        }
+                        
+                    },
+                    async comprar5() {
+                        if(this.puntos>=5000){
+                            this.vidas= 5;
+                        this.puntos -=5000;
+                        }else{
+                            alert("puntos insuficientes");
+                        }
+                        
+                    },
+                    async cargarcpu() {
+                        this.round+=1;
+                        this.estado=0;
+                        this.heroes2=[];
+                        this.random2= Math.floor(Math.random() * (729) + 1);
+                        for (var i = this.random2; i < this.random2 + 3; i++) {
+                            resultado = await axios.get(this.url + i);
+                            this.heroes2.push(resultado.data);
+
+                        };
+                    },
+                        async cargarplay() {
+                           
+                            if (this.vidas>0) {
+                                this.estadon=0;
+                                this.vidas-=1;
+                        this.heroes=[];
+                        this.random= Math.floor(Math.random() * (729) + 1);
+                        for (var i = this.random; i < this.random + 3; i++) {
+                            resultado = await axios.get(this.url + i);
+                            this.heroes.push(resultado.data);
+                        };
+                                
+                            } else {
+                              
+                                alert("no te quedan vidas");
+                               
+                                
+                            }
+                      
+
+
+                    },
+                   
+                    async cargar() {
+                        this.estado=0;
+                        this.estadon=0;
+                        this.heroes2=[];
+                        this.heroes=[];
+                        this.random2= Math.floor(Math.random() * (729) + 1);
+                        this.random= Math.floor(Math.random() * (729) + 1);
+                        for (var i = this.random; i < this.random + 3; i++) {
+                            resultado = await axios.get(this.url + i);
+                            this.heroes.push(resultado.data);
+                        };
+                        for (var i = this.random2; i < this.random2 + 3; i++) {
+                            resultado = await axios.get(this.url + i);
+                            this.heroes2.push(resultado.data);
+
+                        };
+
+
+                    },
+                },
+
+
+                created() {
+                    this.cargar();
+
+                }
+
+            });
+
+        </script>
+</body>
+
+</html>
